@@ -18,7 +18,7 @@ import rospy
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool, Float32MultiArray
-from utils import msg_to_pil, to_numpy, transform_images, load_model, transform_images_lelan
+from lelan_utils import msg_to_pil, to_numpy, transform_images, load_model, transform_images_lelan
 
 from vint_train.training.train_utils import get_action
 import torch

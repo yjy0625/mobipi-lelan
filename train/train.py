@@ -401,7 +401,7 @@ def main(config):
         load_project_folder = os.path.join("logs", config["load_nomad"])
         print("Loading NoMaD model from ", load_project_folder)
         latest_path = os.path.join(load_project_folder, "nomad_crop.pth")
-        latest_checkpoint = torch.load(latest_path) #f"cuda:{}" if torch.cuda.is_available() else "cpu")
+        latest_checkpoint = torch.load(latest_path, f"cuda:0" if torch.cuda.is_available() else "cpu")
         load_model(model_nomad, config["model_type"], latest_checkpoint)
         model_nomad.to(device)
 
@@ -526,6 +526,12 @@ if __name__ == "__main__":
         type=str,
         help="Path to the config file in train_config folder",
     )
+    from datetime import datetime
+    formatted_string = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+    parser.add_argument(
+        "--name",
+        default="",
+    )
     args = parser.parse_args()
 
     with open("config/defaults.yaml", "r") as f:
@@ -553,6 +559,7 @@ if __name__ == "__main__":
         wandb.init(
             project=config["project_name"],
             settings=wandb.Settings(start_method="fork"),
+            name=config["run_name"] if args.name == "" else args.name,
             #entity="gnmv2", # TODO: change this to your wandb entity
         )
         wandb.save(args.config, policy="now")  # save the config file

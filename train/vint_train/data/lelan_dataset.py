@@ -229,6 +229,30 @@ class LeLaN_Dataset(Dataset):
                     image_path.append(self.data_image_folder + folder + "/image/" + str(num).zfill(8) + '.jpg')
                     pickle_path.append(self.data_pickle_folder + folder + "/pickle/" + str(num).zfill(8) + '.pkl')                               
 
+        if self.dataset_name == "robocasa":
+            self.v_random = 0.2 #for random cropping
+            self.h_random = 0.1 #for random cropping 
+                        
+            image_path = []
+            pickle_path = [] 
+
+            folder_lst = next(os.walk(self.data_pickle_folder))[1]
+            num_test = len(folder_lst) - 4500
+            
+            if self.data_split_type == "train":
+                folder_lst_dataset = folder_lst[0:len(folder_lst)-num_test]
+                print("robocasa train seq. number", len(folder_lst_dataset))
+            else:
+                folder_lst_dataset = folder_lst[len(folder_lst)-num_test:len(folder_lst)]
+                print("robocasa test seq. number", len(folder_lst_dataset))
+            
+            for folder in folder_lst_dataset:
+                file_lst = os.listdir(self.data_image_folder + folder + "/image/")
+                number_files = len(file_lst)
+                for num in range(int(number_files-3)):
+                    image_path.append(self.data_image_folder + folder + "/image/" + str(num).zfill(8) + '.jpg')
+                    pickle_path.append(self.data_pickle_folder + folder + "/pickle/" + str(num).zfill(8) + '.pkl')                               
+
         if self.dataset_name == "humanw":
             self.v_random = 0.2 #for random cropping
             self.h_random = 0.1 #for random cropping 
@@ -354,47 +378,54 @@ class LeLaN_Dataset(Dataset):
                 c_pose_check = 0
                 while flag_data_inner == 0:
                     ir = list_rand[il]
-                    if flag_back == 0: #flag_back = 0 --> front-side, flag_back = 1 --> back-side
-                        thres_data = pickle_values[ir]["bbox"][3] <= 224 and pickle_values[ir]["obj_detect"]
+                    if isinstance(pickle_values, list):
+                        pickle_item = pickle_values[ir]
                     else:
-                        thres_data = pickle_values[ir]["bbox"][2] >= 224 and pickle_values[ir]["obj_detect"]
+                        pickle_item = pickle_values
+                    if flag_back == 0: #flag_back = 0 --> front-side, flag_back = 1 --> back-side
+                        thres_data = pickle_item["bbox"][3] <= 224 and pickle_item["obj_detect"]
+                    else:
+                        thres_data = pickle_item["bbox"][2] >= 224 and pickle_item["obj_detect"]
        
                     if thres_data:                                           
-                        if 0 <= pickle_values[ir]["bbox"][0] and pickle_values[ir]["bbox"][0] < 224-1:
-                            bbox_top = int(pickle_values[ir]["bbox"][0])
-                        elif pickle_values[ir]["bbox"][0] < 0:
+                        if 0 <= pickle_item["bbox"][0] and pickle_item["bbox"][0] < 224-1:
+                            bbox_top = int(pickle_item["bbox"][0])
+                        elif pickle_item["bbox"][0] < 0:
                             bbox_top = 0                        
                         else:
                             bbox_top = 223
-                        if 0 <= pickle_values[ir]["bbox"][1] and pickle_values[ir]["bbox"][1] < 224-1:
-                            bbox_bottom = int(pickle_values[ir]["bbox"][1])
-                        elif pickle_values[ir]["bbox"][1] < 0:
+                        if 0 <= pickle_item["bbox"][1] and pickle_item["bbox"][1] < 224-1:
+                            bbox_bottom = int(pickle_item["bbox"][1])
+                        elif pickle_item["bbox"][1] < 0:
                             bbox_bottom = 0                        
                         else:
                             bbox_bottom = 223
-                        if 0 <= pickle_values[ir]["bbox"][2] and pickle_values[ir]["bbox"][2] < 224-1:
-                            bbox_left = int(pickle_values[ir]["bbox"][2])
-                        elif pickle_values[ir]["bbox"][2] < 0:
+                        if 0 <= pickle_item["bbox"][2] and pickle_item["bbox"][2] < 224-1:
+                            bbox_left = int(pickle_item["bbox"][2])
+                        elif pickle_item["bbox"][2] < 0:
                             bbox_left = 0                        
                         else:
                             bbox_left = 223
-                        if 0 <= pickle_values[ir]["bbox"][3] and pickle_values[ir]["bbox"][3] < 224-1:
-                            bbox_right = int(pickle_values[ir]["bbox"][3])
-                        elif pickle_values[ir]["bbox"][3] < 0:
+                        if 0 <= pickle_item["bbox"][3] and pickle_item["bbox"][3] < 224-1:
+                            bbox_right = int(pickle_item["bbox"][3])
+                        elif pickle_item["bbox"][3] < 0:
                             bbox_right = 0                        
                         else:
                             bbox_right = 223
                                                                                 
                         image_crop = image_fullsize[:, bbox_top:bbox_bottom, bbox_left:bbox_right]                        
                         if flag_back == 0:
-                            pose_obj = pickle_values[ir]["pose_median"]
+                            pose_obj = pickle_item["pose_median"]
                         else:
-                            pose_obj = [-pickle_values[ir]["pose_median"][0], pickle_values[ir]["pose_median"][1], -pickle_values[ir]["pose_median"][2]]
+                            pose_obj = [-pickle_item["pose_median"][0], pickle_item["pose_median"][1], -pickle_item["pose_median"][2]]
+                        if self.dataset_name == "robocasa":
+                            # flip pose median y coordinate for robocasa dataset
+                            pose_obj[1] *= -1
                         
                         flag_text = 0
-                        if "prompt" in pickle_values[ir].keys():
-                            ii = random.randint(0, len(pickle_values[ir]["prompt"])-1)
-                            inst_obj = pickle_values[ir]["prompt"][ii]
+                        if "prompt" in pickle_item.keys():
+                            ii = random.randint(0, len(pickle_item["prompt"])-1)
+                            inst_obj = pickle_item["prompt"][ii]
 
                             if isinstance(inst_obj, list):
                                 flag_text = 0
@@ -402,7 +433,7 @@ class LeLaN_Dataset(Dataset):
                                 flag_text = 1                                                                                                           
                         inst_obj_x = inst_obj
 
-                        if pickle_values[ir]["pose_median"][0]**2 + pickle_values[ir]["pose_median"][2]**2 > 10.0**2 or flag_text == 0: 
+                        if pickle_item["pose_median"][0]**2 + pickle_item["pose_median"][2]**2 > 10.0**2 or flag_text == 0: 
                             c_pose_check += 1
                             if c_pose_check == 5:                  
                                 flag_data_inner = 1

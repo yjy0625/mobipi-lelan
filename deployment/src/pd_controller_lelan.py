@@ -10,7 +10,7 @@ from std_msgs.msg import Float32MultiArray, Bool
 from topic_names import (WAYPOINT_TOPIC, REACHED_GOAL_TOPIC, VELOCITY_LELAN_TOPIC)
 
 from ros_data import ROSData
-from utils import clip_angle
+from lelan_utils import clip_angle
 
 # CONSTS
 CONFIG_PATH = "../config/robot.yaml"

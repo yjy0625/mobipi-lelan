@@ -606,7 +606,7 @@ def train_lelan(
         use_wandb: whether to use wandb
     """
     model.train()
-    model.eval_text_encoder()
+    (model.module if isinstance(model, torch.nn.DataParallel) else model).eval_text_encoder()
     num_batches = len(dataloader)
 
     total_loss_logger = Logger("total loss", "train", window_size=print_log_freq)    
@@ -659,7 +659,7 @@ def train_lelan(
             diff_loss = nn.functional.mse_loss(linear_vel[:,:-1], linear_vel[:,1:]) + nn.functional.mse_loss(angular_vel[:,:-1], angular_vel[:,1:]) 
             
             # Total loss
-            loss = dist_loss + 1.0*diff_loss
+            loss = dist_loss + diff_loss
 
             # Optimize
             optimizer.zero_grad()
@@ -756,7 +756,7 @@ def train_lelan_col(
     """
     #goal_mask_prob = torch.clip(torch.tensor(goal_mask_prob), 0, 1)
     model.train()
-    model.eval_text_encoder()
+    (model.module if isinstance(model, torch.nn.DataParallel) else model).eval_text_encoder()
     ema_model_nomad = ema_model_nomad.averaged_model
     ema_model_nomad.eval()    
     num_batches = len(dataloader)
@@ -853,7 +853,7 @@ def train_lelan_col(
             sum_dist = mask_dist.sum()            
             col_loss = nn.functional.mse_loss(mask_nomad*traj_policy, 0.12*mask_nomad*select_traj)*float(B)/(float(B) - sum_dist.float() + 1e-7) #0.12 is de-normalization
             
-            loss = 1.0*dist_loss + 1.0*diff_loss + weight_col_loss*col_loss
+            loss = dist_loss + diff_loss + weight_col_loss*col_loss
 
             # Optimize
             optimizer.zero_grad()

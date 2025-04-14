@@ -38,7 +38,7 @@ normalize: True
 
 # context
 context_type: temporal
-context_size: 0 # 1
+context_size: 1
 alpha: 1e-4
 
 # action output params
@@ -50,51 +50,15 @@ image_size: [224, 224] # width, height
 feature_size: 4096
 
 datasets:  
-  go_stanford4:
-    train: ../dataset/lelan_gs4/train/
-    test: ../dataset/lelan_gs4/test/
-    image: ../dataset/dataset_LeLaN_gs4/image/
-    pickle: ../dataset/dataset_LeLaN_gs4/pickle/
+  robocasa:
+    train: ../dataset/lelan_robocasa/train/
+    test: ../dataset/lelan_robocasa/test/
+    image: ../dataset/dataset_robocasa_filtered/
+    pickle: ../dataset/dataset_robocasa_filtered/
     backside: False
     aug_seq: False
-    only_front: False
-            
-  sacson:
-    train: ../dataset/lelan_sacson/train/
-    test: ../dataset/lelan_sacson/test/
-    image: ../dataset/dataset_LeLaN_sacson/
-    pickle: ../dataset/dataset_LeLaN_sacson/
-    backside: False
-    aug_seq: False
-    only_front: False
-            
-  go_stanford2:
-    train: ../dataset/lelan_gs2/train/
-    test: ../dataset/lelan_gs2/test/
-    image: ../dataset/dataset_LeLaN_gs2/
-    pickle: ../dataset/dataset_LeLaN_gs2/
-    backside: False
-    aug_seq: False
-    only_front: False
+    only_front: True
 
-  humanw:
-    train: ../dataset/lelan_humanw/train/
-    test: ../dataset/lelan_humanw/test/
-    image: ../dataset/dataset_LeLaN_humanwalk/
-    pickle: ../dataset/dataset_LeLaN_humanwalk/    
-    backside: False
-    aug_seq: False 
-    only_front: True   
-
-  youtube:
-    train: ../dataset/lelan_youtube/train/
-    test: ../dataset/lelan_youtube/test/
-    image: ../dataset/dataset_LeLaN_youtube/
-    pickle: ../dataset/dataset_LeLaN_youtube/        
-    backside: False
-    aug_seq: False 
-    only_front: True  
-        
 # logging stuff
 print_log_freq: 1000 # in iterations
 image_log_freq: 40 #0 # in iterations 1000 40
@@ -105,5 +69,4 @@ wandb_log_freq: 10 # in iterations
 eval_freq: 1 # in epochs 20
 save_freq: 1 # in epochs
 
-load_run: lelan-release/lelan_2024_09_17_09_22_55 #xxxxxxxx is the folder of the pretrained checkpoint
-#load_run: lelan-release/lelan_2024_09_16_18_12_27 #xxxxxxxx is the folder of the pretrained checkpoint
+load_run: pretrained-wo-col-loss-wo-temp

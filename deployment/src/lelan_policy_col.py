@@ -25,7 +25,7 @@ from PIL import Image as PILImage
 from cv_bridge import CvBridge, CvBridgeError
 import torchvision.transforms as T
 
-from utils import msg_to_pil, to_numpy, transform_images, transform_images_lelan, load_model, pil2cv, cv2pil
+from lelan_utils import msg_to_pil, to_numpy, transform_images, transform_images_lelan, load_model, pil2cv, cv2pil
 
 # Create the parser
 parser = argparse.ArgumentParser(description="give prompts")

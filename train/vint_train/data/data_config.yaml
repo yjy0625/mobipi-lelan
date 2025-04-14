@@ -66,6 +66,9 @@ go_stanford4:
 go_stanford2:
   metric_waypoint_spacing: 0.12
 
+robocasa:
+  metric_waypoint_spacing: 0.02
+
 humanw:
   metric_waypoint_spacing: 0.12
 
