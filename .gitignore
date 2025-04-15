@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 dataset
 download_youtube/videos
+train/lelan.egg-info
