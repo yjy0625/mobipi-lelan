@@ -236,14 +236,15 @@ class LeLaN_Dataset(Dataset):
             image_path = []
             pickle_path = [] 
 
-            folder_lst = next(os.walk(self.data_pickle_folder))[1]
-            num_test = len(folder_lst) - 4500
+            data_split_filename = os.path.join(self.data_split_folder, "traj_names.txt")
+            with open(data_split_filename, "r") as f:
+                folder_lst_dataset = [line.rstrip() for line in f]
             
             if self.data_split_type == "train":
-                folder_lst_dataset = folder_lst[0:len(folder_lst)-num_test]
+                # folder_lst_dataset = folder_lst[0:len(folder_lst)-num_test]
                 print("robocasa train seq. number", len(folder_lst_dataset))
             else:
-                folder_lst_dataset = folder_lst[len(folder_lst)-num_test:len(folder_lst)]
+                # folder_lst_dataset = folder_lst[len(folder_lst)-num_test:len(folder_lst)]
                 print("robocasa test seq. number", len(folder_lst_dataset))
             
             for folder in folder_lst_dataset:
@@ -418,9 +419,12 @@ class LeLaN_Dataset(Dataset):
                             pose_obj = pickle_item["pose_median"]
                         else:
                             pose_obj = [-pickle_item["pose_median"][0], pickle_item["pose_median"][1], -pickle_item["pose_median"][2]]
-                        if self.dataset_name == "robocasa":
-                            # flip pose median y coordinate for robocasa dataset
-                            pose_obj[1] *= -1
+
+                        # remove samples where image crops are too small
+                        if image_crop.shape[1] < 3 or image_crop.shape[2] < 3:
+                            flag_data_inner = 1
+                            iv = random.randint(0, len(self.image_path)-1)
+                            continue
                         
                         flag_text = 0
                         if "prompt" in pickle_item.keys():

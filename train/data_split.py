@@ -22,16 +22,16 @@ def main(args: argparse.Namespace):
         f
         for f in os.listdir(args.data_dir)
         if os.path.isdir(os.path.join(args.data_dir, f))
-        and "traj_data.pkl" in os.listdir(os.path.join(args.data_dir, f))
     ]
 
     # Randomly shuffle the names of the folders
     random.shuffle(folder_names)
 
     # Split the names of the folders into train and test sets
-    split_index = int(args.split * len(folder_names))
+    print(f"Total {len(folder_names)} folders")
+    split_index = 7500 # int(args.split * len(folder_names))
     train_folder_names = folder_names[:split_index]
-    test_folder_names = folder_names[split_index:]
+    test_folder_names = folder_names[-1000:]
 
     # Create directories for the train and test sets
     train_dir = os.path.join(args.data_splits_dir, args.dataset_name, "train")

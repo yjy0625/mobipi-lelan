@@ -51,10 +51,10 @@ feature_size: 4096
 
 datasets:  
   robocasa:
-    train: ../dataset/lelan_robocasa/train/
-    test: ../dataset/lelan_robocasa/test/
-    image: ../dataset/dataset_robocasa_filtered/
-    pickle: ../dataset/dataset_robocasa_filtered/
+    train: /home/jingyunyang/mount/jingyuny/p_mobpi/lelan_ft/robocasa/train
+    test: /home/jingyunyang/mount/jingyuny/p_mobpi/lelan_ft/robocasa/test
+    image: /home/jingyunyang/mount/jingyuny/p_mobpi/lelan_ft/
+    pickle: /home/jingyunyang/mount/jingyuny/p_mobpi/lelan_ft/
     backside: False
     aug_seq: False
     only_front: True
@@ -69,4 +69,4 @@ wandb_log_freq: 10 # in iterations
 eval_freq: 1 # in epochs 20
 save_freq: 1 # in epochs
 
-load_run: pretrained-wo-col-loss-wo-temp
+load_run: /home/jingyunyang/code/p_mobpi/mobpi/external/lelan/deployment/model_weights/wo_col_loss_wo_temp/
