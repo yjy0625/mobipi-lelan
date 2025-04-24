@@ -51,10 +51,10 @@ feature_size: 4096
 
 datasets:  
   robocasa:
-    train: /home/ubuntu/data/datasets/lelan_ft/robocasa/train
-    test: /home/ubuntu/data/datasets/lelan_ft/robocasa/test
-    image: /home/ubuntu/data/datasets/lelan_ft/
-    pickle: /home/ubuntu/data/datasets/lelan_ft/
+    train: /home/ubuntu/data/datasets/lelan_ft_npa/robocasa/train
+    test: /home/ubuntu/data/datasets/lelan_ft_npa/robocasa/test
+    image: /home/ubuntu/data/datasets/lelan_ft_npa/
+    pickle: /home/ubuntu/data/datasets/lelan_ft_npa/
     backside: False
     aug_seq: False
     only_front: True

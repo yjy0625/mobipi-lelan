@@ -31,7 +31,7 @@ def main(args: argparse.Namespace):
     print(f"Total {len(folder_names)} folders")
     split_index = 7500 # int(args.split * len(folder_names))
     train_folder_names = folder_names[:split_index]
-    test_folder_names = folder_names[-1000:]
+    test_folder_names = folder_names[split_index:]
 
     # Create directories for the train and test sets
     train_dir = os.path.join(args.data_splits_dir, args.dataset_name, "train")
